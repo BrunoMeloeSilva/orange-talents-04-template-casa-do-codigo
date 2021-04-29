@@ -4,9 +4,11 @@ import javax.validation.constraints.NotBlank;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import br.com.zupacademy.brunomeloesilva.casadocodigo.validacoesglobais.ProibeValorDuplicado;
+
 public class CategoriaDTORequest {
 	
-	@NotBlank
+	@NotBlank @ProibeValorDuplicado(classeDominio = CategoriaModel.class, nomeCampo = "nome")
 	private String nome;
 
 	

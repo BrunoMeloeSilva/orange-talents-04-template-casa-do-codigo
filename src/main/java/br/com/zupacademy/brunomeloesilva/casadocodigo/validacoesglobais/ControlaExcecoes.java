@@ -1,4 +1,4 @@
-package br.com.zupacademy.brunomeloesilva.casadocodigo.controlaexcecoes;
+package br.com.zupacademy.brunomeloesilva.casadocodigo.validacoesglobais;
 
 import java.util.ArrayList;
 import java.util.List;

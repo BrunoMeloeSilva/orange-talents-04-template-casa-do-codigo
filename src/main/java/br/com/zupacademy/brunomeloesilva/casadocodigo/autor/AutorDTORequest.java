@@ -4,11 +4,13 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 
+import br.com.zupacademy.brunomeloesilva.casadocodigo.validacoesglobais.ProibeValorDuplicado;
+
 public class AutorDTORequest {
 	
 	@NotBlank
 	private String nome;
-	@NotBlank @Email
+	@NotBlank @Email @ProibeValorDuplicado(classeDominio = AutorModel.class, nomeCampo = "email")
 	private String email;
 	@NotBlank @Size(max = 400)
 	private String descricao;

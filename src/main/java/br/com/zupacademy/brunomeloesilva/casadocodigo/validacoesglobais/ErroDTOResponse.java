@@ -1,4 +1,4 @@
-package br.com.zupacademy.brunomeloesilva.casadocodigo.controlaexcecoes;
+package br.com.zupacademy.brunomeloesilva.casadocodigo.validacoesglobais;
 
 public class ErroDTOResponse {
 
