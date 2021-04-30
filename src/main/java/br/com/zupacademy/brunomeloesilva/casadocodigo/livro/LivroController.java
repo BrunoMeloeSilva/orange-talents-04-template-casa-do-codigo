@@ -1,6 +1,7 @@
 package br.com.zupacademy.brunomeloesilva.casadocodigo.livro;
 
 import java.util.List;
+import java.util.Optional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -9,6 +10,7 @@ import javax.validation.Valid;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -30,11 +32,21 @@ public class LivroController {
 	
 	@GetMapping
 	public ResponseEntity<List<LivroDTOResponseResumido>> retornaTodosLivros(){	
-		List<LivroDTOResponseResumido> LivroDTOResponseResumidoList = LivroDTOResponseResumido.getAll(entityManager);
+		List<LivroDTOResponseResumido> livroDTOResponseResumidoList = LivroDTOResponseResumido.getAll(entityManager);
 		
-		if(LivroDTOResponseResumidoList.isEmpty())
+		if(livroDTOResponseResumidoList.isEmpty())
 			return ResponseEntity.noContent().build();
 		
-		return ResponseEntity.ok(LivroDTOResponseResumidoList);
+		return ResponseEntity.ok(livroDTOResponseResumidoList);
+	}
+	
+	@GetMapping("/{id}")
+	public ResponseEntity<LivroDTOResponseCompleto> retornaUmLivro(@PathVariable Long id){	
+		Optional<LivroDTOResponseCompleto> livroDTOCompleto = new LivroDTOResponseCompleto().getOne(id, entityManager);
+		
+		if(livroDTOCompleto.isEmpty())
+			return ResponseEntity.notFound().build();
+		
+		return ResponseEntity.ok(livroDTOCompleto.get());
 	}
 }
