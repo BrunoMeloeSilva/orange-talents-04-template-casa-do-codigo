@@ -11,15 +11,15 @@ import javax.validation.Constraint;
 import javax.validation.Payload;
 
 @Documented
-@Constraint(validatedBy = {ProibeValorDuplicadoValidator.class})
+@Constraint(validatedBy = {IdExistenteValidator.class})
 @Retention(RUNTIME)
 @Target(FIELD)
-public @interface ProibeValorDuplicado {
+public @interface IdExistente {
 	
-	String message() default "{javax.validation.constraints.ProibeValorDuplicado.message}";
+	String message() default "{javax.validation.constraints.IdExistente.message}";
 	Class<?>[] groups() default {};
 	Class<? extends Payload>[] payload() default {};
 	
-	String nomeCampo();
+	String identificador();
 	Class<?> classeDominio();
 }

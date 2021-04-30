@@ -17,6 +17,9 @@ public class CategoriaModel {
 	@Column(nullable = false, unique = true)
 	private String nome;
 
+	@Deprecated
+	public CategoriaModel() {/*Este construtor é para uso do Hibernate, para as buscas no DB*/}
+	
 	public CategoriaModel(String nome) {
 		this.nome = nome;
 	}
