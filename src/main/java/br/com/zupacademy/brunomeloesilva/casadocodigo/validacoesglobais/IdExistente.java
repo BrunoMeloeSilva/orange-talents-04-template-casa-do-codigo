@@ -23,3 +23,4 @@ public @interface IdExistente {
 	String identificador();
 	Class<?> classeDominio();
 }
+//TODO Esse nome de pacote para o erro não tem nada haver, trocar para o pacote atual

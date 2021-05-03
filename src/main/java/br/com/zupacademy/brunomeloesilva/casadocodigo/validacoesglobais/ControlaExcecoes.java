@@ -25,6 +25,12 @@ public class ControlaExcecoes extends ResponseEntityExceptionHandler {
 	protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex,
 			HttpHeaders headers, HttpStatus status, WebRequest request) {
 	
+		List<ErroDTOResponse> erroDTOResponseList = retornaErroDosCamposOuErroDaClasse(ex);
+		
+		return ResponseEntity.badRequest().body(erroDTOResponseList);
+	}
+
+	private List<ErroDTOResponse> retornaErroDosCamposOuErroDaClasse(MethodArgumentNotValidException ex) {
 		List<ErroDTOResponse> erroDTOResponseList = new ArrayList<>();
 		List<FieldError> fieldErrors = ex.getBindingResult().getFieldErrors();
 		
@@ -33,7 +39,11 @@ public class ControlaExcecoes extends ResponseEntityExceptionHandler {
 			ErroDTOResponse erro = new ErroDTOResponse(field.getField(), mensagem);
 			erroDTOResponseList.add(erro);
 		});
-		
-		return ResponseEntity.badRequest().body(erroDTOResponseList);
+
+		if(erroDTOResponseList.isEmpty()) {
+			String msg = ex.getBindingResult().getGlobalErrors().get(0).getDefaultMessage();
+			erroDTOResponseList.add(new ErroDTOResponse(null, msg));
+		}
+		return erroDTOResponseList;
 	}
 }
