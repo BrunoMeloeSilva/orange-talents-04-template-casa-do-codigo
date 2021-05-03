@@ -10,29 +10,30 @@ import javax.persistence.TypedQuery;
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 
-public class ProibeEstadoDuplicadoNoMesmoPaisValidator implements ConstraintValidator<ProibeEstadoDuplicadoNoMesmoPais, Object> {
+public class EstadoObrigatorioSePaisTiverEstadoValidator implements ConstraintValidator<EstadoObrigatorioSePaisTiverEstado, Object> {
 	
 	@PersistenceContext
 	EntityManager entityManager;
 	
+	private String identificadorPais;
+	private String identificadorEstado;
+	
 	@Override
-	public void initialize(ProibeEstadoDuplicadoNoMesmoPais constraintAnnotation) {}
+	public void initialize(EstadoObrigatorioSePaisTiverEstado constraintAnnotation) {
+		identificadorPais = constraintAnnotation.identificadorPais();
+		identificadorEstado = constraintAnnotation.identificadorEstado();
+	}
 	
 	@Override
 	public boolean isValid(Object object, ConstraintValidatorContext context) {
 		
 		Map<String, Object> mapAtributos = retornaOsAtributosEValoresDoObjeto(object);
 		
-		String sql = String.format("Select count(*)>0 "
-				+ "From PaisEstadoModel pe join pe.estadoModel e "
-				+ "Where pe.chaveComposta.pais_id = %s And e.nome = '%s'"
-				, mapAtributos.get("paisId"), mapAtributos.get("nome"));
-		
+		String sql = String.format("Select count(*) > 0 From PaisEstadoModel pe Where pe.chaveComposta.pais_id = %s", mapAtributos.get(identificadorPais));
 		TypedQuery<Boolean> query = entityManager.createQuery(sql, Boolean.class);
+		Boolean paisPossuiEstados = query.getSingleResult();
 		
-		Boolean chaveDuplicada = query.getSingleResult();
-		
-		if(chaveDuplicada) {
+		if(paisPossuiEstados && mapAtributos.get(identificadorEstado) == null) {
 			return false;
 		}
 		return true;

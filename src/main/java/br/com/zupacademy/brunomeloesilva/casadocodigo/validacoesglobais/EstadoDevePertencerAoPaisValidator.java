@@ -10,32 +10,35 @@ import javax.persistence.TypedQuery;
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 
-public class ProibeEstadoDuplicadoNoMesmoPaisValidator implements ConstraintValidator<ProibeEstadoDuplicadoNoMesmoPais, Object> {
+public class EstadoDevePertencerAoPaisValidator implements ConstraintValidator<EstadoDevePertencerAoPais, Object> {
 	
 	@PersistenceContext
 	EntityManager entityManager;
 	
+	private String identificadorPais;
+	private String identificadorEstado;
+	
 	@Override
-	public void initialize(ProibeEstadoDuplicadoNoMesmoPais constraintAnnotation) {}
+	public void initialize(EstadoDevePertencerAoPais constraintAnnotation) {
+		identificadorPais = constraintAnnotation.identificadorPais();
+		identificadorEstado = constraintAnnotation.identificadorEstado();
+	}
 	
 	@Override
 	public boolean isValid(Object object, ConstraintValidatorContext context) {
 		
 		Map<String, Object> mapAtributos = retornaOsAtributosEValoresDoObjeto(object);
 		
-		String sql = String.format("Select count(*)>0 "
-				+ "From PaisEstadoModel pe join pe.estadoModel e "
-				+ "Where pe.chaveComposta.pais_id = %s And e.nome = '%s'"
-				, mapAtributos.get("paisId"), mapAtributos.get("nome"));
+		String sql = String.format("Select count(*) > 0 From PaisEstadoModel pe Where pe.chaveComposta.pais_id = %s And pe.chaveComposta.estado_id = %s"
+				, mapAtributos.get(identificadorPais), mapAtributos.get(identificadorEstado));
 		
 		TypedQuery<Boolean> query = entityManager.createQuery(sql, Boolean.class);
+		Boolean estadoPercenteAoPais = query.getSingleResult();
 		
-		Boolean chaveDuplicada = query.getSingleResult();
-		
-		if(chaveDuplicada) {
-			return false;
+		if((mapAtributos.get(identificadorEstado) == null && estadoPercenteAoPais == false) ||  estadoPercenteAoPais) {
+			return true;
 		}
-		return true;
+		return false;
 	}
 
 	//TODO Este método está se repetindo no meu código, portanto, deveria estar em uma classe separada.
