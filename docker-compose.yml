@@ -1,0 +1,28 @@
+version: '3.8'
+services: 
+  db: 
+    image: mariadb
+    container_name: database
+    restart: on-failure
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_DATABASE=casa-do-codigo
+    networks:  
+      - production-network 
+  app1: 
+    build: 
+      dockerfile: ./Dockerfile 
+      context: . 
+    image: brunomeloesilva/casa-do-codigo 
+    container_name: casa-do-codigo 
+    environment:
+      - ENDERECO_DB=jdbc:mysql://db:3306/casa-do-codigo
+    ports: 
+      - "8080:8080" 
+    networks:  
+      - production-network 
+    depends_on: 
+      - db  
+networks:  
+    production-network: 
+        driver: bridge
